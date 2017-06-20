@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Forward SSH agent socket to a well-known location
 set -eo pipefail
 
