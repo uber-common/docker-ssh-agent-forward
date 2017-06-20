@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -eo pipefail
 
 echo "$AUTHORIZED_KEYS" | base64 -d >/root/.ssh/authorized_keys

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -eo pipefail
 
 IMAGE_NAME=uber/ssh-agent-forward:latest
