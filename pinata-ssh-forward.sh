@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+
+ssh-add -L > /dev/null
+if [ ! $? -eq 0 ]
+then
+    RED_C='\033[0;31m'
+    RESET_C='\033[0m'
+    echo -e "${RED_C}SSH Agent doesn't have any identities, consider running:${RESET_C}"
+    echo "    ssh-add"
+fi
+
 set -eo pipefail
 
 IMAGE_NAME=uber/ssh-agent-forward:latest
