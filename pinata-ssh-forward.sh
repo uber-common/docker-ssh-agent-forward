@@ -3,21 +3,35 @@ set -eo pipefail
 
 IMAGE_NAME=uber/ssh-agent-forward:latest
 CONTAINER_NAME=pinata-sshd
+VOLUME_TYPE=volume # volume, bind
 VOLUME_NAME=ssh-agent
+HOST_VOLUME_PATH=${HOME}/.pinata-ssh-agent
 HOST_PORT=2244
 AUTHORIZED_KEYS=$(ssh-add -L | base64 | tr -d '\n')
 KNOWN_HOSTS_FILE=$(mktemp -t dsaf.XXX)
+
+if [ -e $HOME/.pinata-ssh.env ]; then
+    . $HOME/.pinata-ssh.env
+fi
 
 trap 'rm ${KNOWN_HOSTS_FILE}' EXIT
 
 docker rm -f "${CONTAINER_NAME}" >/dev/null 2>&1 || true
 
-docker volume create --name "${VOLUME_NAME}"
+if [ ${VOLUME_TYPE} == "volume" ]; then
+    docker volume create --name "${VOLUME_NAME}"
+    VOLUME_MOUNT=$VOLUME_NAME
+elif [ ${VOLUME_TYPE} == "bind" ]; then
+    VOLUME_MOUNT=$HOST_VOLUME_PATH
+else
+    echo "Unsupported volume type: $VOLUME_TYPE"
+    exit 1
+fi
 
 docker run \
   --name "${CONTAINER_NAME}" \
   -e AUTHORIZED_KEYS="${AUTHORIZED_KEYS}" \
-  -v ${VOLUME_NAME}:/ssh-agent \
+  -v "${VOLUME_MOUNT}:/ssh-agent" \
   -d \
   -p "${HOST_PORT}:22" \
   "${IMAGE_NAME}" >/dev/null \

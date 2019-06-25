@@ -43,6 +43,34 @@ To fetch the latest image, do:
 pinata-ssh-pull
 ```
 
+## Using with docker-compose
+
+To use with docker-compose, you can change the ssh-agent volume type to a host directory
+rather than a docker volume, which can then be mounted in docker-compose.yml. To do this,
+create a `.pinata-ssh.env` file in your home directory and set the `VOLUME_TYPE` to "bind":
+```
+echo 'VOLUME_TYPE=bind' > ~/.pinata-ssh.env
+```
+
+This will cause the ssh-agent file to be written to `$HOME/.pinata-ssh-agent`, which
+you can reference in your docker-compose.yml:
+
+```
+# docker-compose.yml
+services:
+...
+  volumes:
+    - type: bind
+      source: ${HOME}/.pinata-ssh-agent
+      target: /ssh-agent
+  environment:
+    - SSH_AUTH_SOCK=/ssh-agent/ssh-agent.sock
+...
+```
+
+The host mount path can also be changed by setting a `HOST_VOLUME_PATH` in the
+.pinata-ssh.env file.
+
 ## Troubleshooting
 
 If pinata-ssh-forward fails to run, run `ssh-add -l`. If there are no identities, then run `ssh-add`.
