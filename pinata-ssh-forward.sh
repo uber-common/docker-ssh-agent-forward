@@ -16,6 +16,7 @@ docker volume create --name "${VOLUME_NAME}"
 
 docker run \
   --name "${CONTAINER_NAME}" \
+  --init \
   -e AUTHORIZED_KEYS="${AUTHORIZED_KEYS}" \
   -v ${VOLUME_NAME}:/ssh-agent \
   -d \
