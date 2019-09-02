@@ -59,4 +59,4 @@ echo 'Run "pinata-ssh-mount" to get a command-line fragment that'
 echo 'can be added to "docker run" to mount the SSH agent socket.'
 echo ""
 echo 'For example:'
-echo "docker run -it \$(pinata-ssh-mount) uber/ssh-agent-forward ssh -T git@github.com"
+echo "docker run -it --rm \$(pinata-ssh-mount) uber/ssh-agent-forward ssh -T git@github.com"
